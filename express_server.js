@@ -53,6 +53,15 @@ app.get('/urls/:id', (request, response) => {
   response.render('urls_show', templateVars);
 });
 
+app.get('/u/:shortURL', (request, response) => {
+  const longURL = urlDatabase[request.params.shortURL];
+  if (longURL) {
+    response.redirect(longURL);
+  } else {
+    response.redirect('/urls');
+  }
+});
+
 app.get('/hello', (request, response) => {
   response.end('<html><body>Hello <b>World</b></body></html>\n');
 });
