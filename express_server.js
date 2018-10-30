@@ -18,6 +18,14 @@ app.get('/urls', (request, response) => {
   response.render('urls_index', templateVars);
 });
 
+app.get('/urls/:id', (request, response) => {
+  let templateVars = {
+    shortURL: request.params.id,
+    longURL: urlDatabase[request.params.id]
+  };
+  response.render('urls_show', templateVars);
+});
+
 app.get('/hello', (request, response) => {
   response.end('<html><body>Hello <b>World</b></body></html>\n');
 });
