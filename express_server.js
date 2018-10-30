@@ -26,6 +26,10 @@ app.get('/urls/:id', (request, response) => {
   response.render('urls_show', templateVars);
 });
 
+app.get('/urls_new', (request, response) => {
+  response.render('urls_new');
+});
+
 app.get('/hello', (request, response) => {
   response.end('<html><body>Hello <b>World</b></body></html>\n');
 });
