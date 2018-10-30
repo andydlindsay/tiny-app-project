@@ -5,7 +5,7 @@
   "main": "express_server.js",
   "scripts": {
     "test": "mocha",
-    "start": "node express_server.js"
+    "start": "./node_modules/.bin/nodemon -L express_server.js"
   },
   "repository": {
     "type": "git",
@@ -14,7 +14,7 @@
   "keywords": [
     "url-shortener"
   ],
-  "author": "Andy Lindsay <andydlindsay@gmail.com>",
+  "author": "Andy Lindsay <andydlindsay@gmail.com> (www.andydlindsay.com)",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/andydlindsay/tiny-app-project/issues"
@@ -24,5 +24,8 @@
     "body-parser": "^1.18.3",
     "ejs": "^2.6.1",
     "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.5"
   }
 }

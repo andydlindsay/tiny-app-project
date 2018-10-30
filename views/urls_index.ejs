@@ -10,8 +10,17 @@
     <table>
       <% for(let url in urlDatabase) { %>
         <tr>
-          <td><a href="#">http://localhost:8080/<%= url %></a></td>
+          <td>
+            <a href=<%= `http://localhost:8080/u/${url}` %>>http://localhost:8080/u/<%= url %></a>
+          </td>
           <td>(<%= urlDatabase[url] %>)</td>
+          <td>
+            <form method="POST" action=<%= `/urls/${url}/delete` %>>
+              <button type="submit">
+                Delete <i class="fas fa-trash-alt"></i>
+              </button>
+            </form>
+          </td>
         </tr>
       <% } %>
     </table>
