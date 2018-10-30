@@ -45,6 +45,14 @@ app.get('/urls/new', (request, response) => {
   response.render('urls_new');
 });
 
+app.post('/urls/:id/delete', (request, response) => {
+  const shortUrl = request.params.id;
+  if (urlDatabase[shortUrl]) {
+    delete urlDatabase[shortUrl];
+  }
+  response.redirect('/urls');
+});
+
 app.get('/urls/:id', (request, response) => {
   let templateVars = {
     shortURL: request.params.id,
