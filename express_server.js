@@ -53,6 +53,15 @@ app.post('/urls/:id/delete', (request, response) => {
   response.redirect('/urls');
 });
 
+app.post('/urls/:id', (request, response) => {
+  const longUrl = request.body.longURL;
+  const shortUrl = request.params.id;
+  if (longUrl) {
+    urlDatabase[shortUrl] = longUrl;
+  }
+  response.redirect('/urls');
+});
+
 app.get('/urls/:id', (request, response) => {
   let templateVars = {
     shortURL: request.params.id,

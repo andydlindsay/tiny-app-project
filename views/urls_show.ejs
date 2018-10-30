@@ -5,8 +5,11 @@
 
   <body>
 
-    <h2>URL Short Form: <%= shortURL %></h2>
-    <h2>URL Long Form: <%= longURL %></h2>
+    <h2>Short URL: <%= shortURL %></h2>
+    <form method="POST" action=<%= `/urls/${shortURL}` %>>
+      <input id="longURL" type="text" name="longURL" style="width: 300px;" value=<%= `${longURL}` %>>
+      <button type="submit">Update</button>
+    </form>
 
   </body>
 
