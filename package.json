@@ -1,0 +1,26 @@
+{
+  "name": "tinyapp-project",
+  "version": "1.0.0",
+  "description": "A Nodejs URL shortener",
+  "main": "express_server.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "node express_server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andydlindsay/tiny-app-project.git"
+  },
+  "keywords": [
+    "url-shortener"
+  ],
+  "author": "Andy Lindsay <andydlindsay@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andydlindsay/tiny-app-project/issues"
+  },
+  "homepage": "https://github.com/andydlindsay/tiny-app-project#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
