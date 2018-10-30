@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <title>TinyApp</title>
+  </head>
+
+  <body>
+
+    <h1>Your Short URLs</h1>
+
+    <table>
+      <% for(var url in urlDatabase) { %>
+        <tr>
+          <td><a href="#">http://localhost:8080/<%= url %></a></td>
+          <td>(<%= urlDatabase[url] %>)</td>
+        </tr>
+      <% } %>
+    </table>
+
+    <a href="#">Shorten a URL</a>
+  </body>
+
+</html>

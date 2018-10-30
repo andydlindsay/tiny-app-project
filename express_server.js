@@ -13,6 +13,11 @@ app.get('/urls.json', (request, response) => {
   response.json(urlDatabase);
 });
 
+app.get('/urls', (request, response) => {
+  let templateVars = { urlDatabase };
+  response.render('urls_index', templateVars);
+});
+
 app.get('/hello', (request, response) => {
   response.end('<html><body>Hello <b>World</b></body></html>\n');
 });
