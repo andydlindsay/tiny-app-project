@@ -8,7 +8,7 @@
     <h1>Your Short URLs</h1>
 
     <table>
-      <% for(var url in urlDatabase) { %>
+      <% for(let url in urlDatabase) { %>
         <tr>
           <td><a href="#">http://localhost:8080/<%= url %></a></td>
           <td>(<%= urlDatabase[url] %>)</td>
@@ -16,7 +16,7 @@
       <% } %>
     </table>
 
-    <a href="#">Shorten a URL</a>
+    <a href="/urls/new">Shorten a URL</a>
   </body>
 
 </html>
