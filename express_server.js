@@ -1,36 +1,19 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 
 app.set('view engine', 'ejs');
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-const urlDatabase = {
-  'b2xVn2': {
-    user_id: 'userRandomId',
-    longURL: 'http://www.lighthouselabs.ca',
-  },
-  '9sm5xK': {
-    user_id: 'user2RandomId',
-    longURL: 'http://www.google.com',
-  },
-};
+const urlDatabase = {};
 
-const users = {
-  'userRandomId': {
-    id: 'userRandomId',
-    email: 'user@example.com',
-    password: 'purple-monkey-dinosaur'
-  },
-  'user2RandomId': {
-    id: 'user2RandomId',
-    email: 'user2@example.com',
-    password: 'dishwasher-funk'
-  },
-};
+const users = {};
 
 function generateRandomString(stringLength) {
   let outputString = '';
@@ -81,7 +64,7 @@ app.post('/register', (request, response) => {
     const newUser = {
       id,
       email: request.body.email,
-      password: request.body.password,
+      password: bcrypt.hashSync(request.body.password, 10),
     };
     users[id] = (newUser);
     response.cookie('user_id', id);
@@ -109,7 +92,7 @@ app.post('/login', (request, response) => {
     for (let user in users) {
       if (users[user].email === email) {
         userFound = true;
-        if (users[user].password === password) {
+        if (bcrypt.compareSync(password, users[user].password)) {
           // good password
           response.cookie('user_id', users[user].id);
           response.redirect('/urls');
