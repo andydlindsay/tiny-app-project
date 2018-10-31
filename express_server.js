@@ -143,7 +143,11 @@ app.get('/urls', (request, response) => {
 
 app.post('/urls', (request, response) => {
   const shortUrl = generateRandomString(6);
-  urlDatabase[shortUrl].longURL = request.body.longURL;
+  const newUrl = {
+    user_id: request.cookies['user_id'],
+    longURL: request.body.longURL,
+  };
+  urlDatabase[shortUrl] = newUrl;
   response.redirect(`/urls/${shortUrl}`);
 });
 
@@ -160,8 +164,11 @@ app.get('/urls/new', (request, response) => {
 
 app.post('/urls/:id/delete', (request, response) => {
   const shortUrl = request.params.id;
-  if (urlDatabase[shortUrl]) {
-    delete urlDatabase[shortUrl];
+  const user_id = request.cookies['user_id'];
+  if (urlDatabase[shortUrl].user_id === user_id) {
+    if (urlDatabase[shortUrl]) {
+      delete urlDatabase[shortUrl];
+    }
   }
   response.redirect('/urls');
 });
@@ -169,8 +176,11 @@ app.post('/urls/:id/delete', (request, response) => {
 app.post('/urls/:id', (request, response) => {
   const longUrl = request.body.longURL;
   const shortUrl = request.params.id;
-  if (longUrl) {
-    urlDatabase[shortUrl].longURL = longUrl;
+  const user_id = request.cookies['user_id'];
+  if (urlDatabase[shortUrl].user_id === user_id) {
+    if (longUrl) {
+      urlDatabase[shortUrl].longURL = longUrl;
+    }
   }
   response.redirect('/urls');
 });
