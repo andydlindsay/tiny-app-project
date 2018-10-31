@@ -85,13 +85,40 @@ app.get('/login', (request, response) => {
 });
 
 app.post('/login', (request, response) => {
-  if (request.body.username) {
-    response.cookie('username', request.body.username);
+  // check if email and password have been passed in
+  if (request.body.email && request.body.password) {
+    const email = request.body.email;
+    const password = request.body.password;
+    let userFound = false;
+    for (let user in users) {
+      if (users[user].email === email) {
+        userFound = true;
+        if (users[user].password === password) {
+          // good password
+          response.cookie('user_id', users[user].id);
+          response.redirect('/urls');
+        } else {
+          // bad password
+          response.status(403);
+          response.end();
+          return;
+        }
+      }
+    }
+    if (!userFound) {
+      // email did not match any existing users
+      response.status(403);
+      response.end();
+      return;
+    }
+  } else {
+    response.status(403);
+    response.end();
+    return;
   }
-  response.redirect('/urls');
 });
 
-app.post('/logout', (request, response) => {
+app.get('/logout', (request, response) => {
   response.clearCookie('user_id');
   response.redirect('/urls');
 });

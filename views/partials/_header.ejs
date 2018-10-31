@@ -6,4 +6,8 @@
 <body>
   <% if (user) { %>
     <h2><%= user.email %></h2>
+    <a href="/logout">Logout</a>
+  <% } else { %>
+    <a href="/register">Register</a>
+    <a href="/login">Login</a>
   <% } %>
