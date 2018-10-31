@@ -47,6 +47,16 @@ function generateRandomString(stringLength) {
   return outputString;
 }
 
+function urlsForUser(user_id) {
+  const userUrls = {};
+  for (let url in urlDatabase) {
+    if (urlDatabase[url].user_id === user_id) {
+      userUrls[url] = urlDatabase[url];
+    }
+  }
+  return userUrls;
+}
+
 app.get('/register', (request, response) => {
   const templateVars = {
     user: users[request.cookies['user_id']],
@@ -134,9 +144,10 @@ app.get('/urls.json', (request, response) => {
 });
 
 app.get('/urls', (request, response) => {
+  const user_id = request.cookies['user_id'];
   let templateVars = {
-    urlDatabase,
-    user: users[request.cookies['user_id']],
+    urlDatabase: urlsForUser(user_id),
+    user: users[user_id],
   };
   response.render('urls_index', templateVars);
 });
