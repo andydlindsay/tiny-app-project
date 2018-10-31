@@ -1,6 +1,8 @@
+require('dotenv').config();
+
 const express = require('express');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 
 const app = express();
@@ -9,7 +11,10 @@ const PORT = process.env.PORT || 8080;
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  secret: process.env.SECRET_KEY,
+}));
 
 const urlDatabase = {};
 
@@ -42,7 +47,7 @@ function urlsForUser(user_id) {
 
 app.get('/register', (request, response) => {
   const templateVars = {
-    user: users[request.cookies['user_id']],
+    user: users[request.session.user_id],
   };
   response.render('register', templateVars);
 });
@@ -67,7 +72,7 @@ app.post('/register', (request, response) => {
       password: bcrypt.hashSync(request.body.password, 10),
     };
     users[id] = (newUser);
-    response.cookie('user_id', id);
+    request.session.user_id = id;
     response.redirect('/urls');
   } else {
     // email and/or password have not been passed in
@@ -78,7 +83,7 @@ app.post('/register', (request, response) => {
 
 app.get('/login', (request, response) => {
   const templateVars = {
-    user: users[request.cookies['user_id']],
+    user: users[request.session.user_id],
   };
   response.render('login', templateVars);
 });
@@ -94,7 +99,7 @@ app.post('/login', (request, response) => {
         userFound = true;
         if (bcrypt.compareSync(password, users[user].password)) {
           // good password
-          response.cookie('user_id', users[user].id);
+          request.session.user_id = users[user].id;
           response.redirect('/urls');
         } else {
           // bad password
@@ -118,7 +123,7 @@ app.post('/login', (request, response) => {
 });
 
 app.get('/logout', (request, response) => {
-  response.clearCookie('user_id');
+  request.session = null;
   response.redirect('/urls');
 });
 
@@ -127,7 +132,7 @@ app.get('/urls.json', (request, response) => {
 });
 
 app.get('/urls', (request, response) => {
-  const user_id = request.cookies['user_id'];
+  const user_id = request.session.user_id;
   let templateVars = {
     urlDatabase: urlsForUser(user_id),
     user: users[user_id],
@@ -138,7 +143,7 @@ app.get('/urls', (request, response) => {
 app.post('/urls', (request, response) => {
   const shortUrl = generateRandomString(6);
   const newUrl = {
-    user_id: request.cookies['user_id'],
+    user_id: request.session.user_id,
     longURL: request.body.longURL,
   };
   urlDatabase[shortUrl] = newUrl;
@@ -147,7 +152,7 @@ app.post('/urls', (request, response) => {
 
 app.get('/urls/new', (request, response) => {
   let templateVars = {
-    user: users[request.cookies['user_id']],
+    user: users[request.session.user_id],
   };
   if (templateVars.user) {
     response.render('urls_new', templateVars);
@@ -158,7 +163,7 @@ app.get('/urls/new', (request, response) => {
 
 app.post('/urls/:id/delete', (request, response) => {
   const shortUrl = request.params.id;
-  const user_id = request.cookies['user_id'];
+  const user_id = request.session.user_id;
   if (urlDatabase[shortUrl].user_id === user_id) {
     if (urlDatabase[shortUrl]) {
       delete urlDatabase[shortUrl];
@@ -170,7 +175,7 @@ app.post('/urls/:id/delete', (request, response) => {
 app.post('/urls/:id', (request, response) => {
   const longUrl = request.body.longURL;
   const shortUrl = request.params.id;
-  const user_id = request.cookies['user_id'];
+  const user_id = request.session.user_id;
   if (urlDatabase[shortUrl].user_id === user_id) {
     if (longUrl) {
       urlDatabase[shortUrl].longURL = longUrl;
@@ -185,7 +190,7 @@ app.get('/urls/:id', (request, response) => {
     let templateVars = {
       shortURL,
       longURL: urlDatabase[request.params.id].longURL,
-      user: users[request.cookies['user_id']],
+      user: users[request.session.user_id],
     };
     response.render('urls_show', templateVars);
   } else {
