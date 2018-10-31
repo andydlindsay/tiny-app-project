@@ -28,6 +28,10 @@ function generateRandomString(stringLength) {
   return outputString;
 }
 
+app.get('/register', (request, response) => {
+  response.render('register');
+});
+
 app.post('/login', (request, response) => {
   if (request.body.username) {
     response.cookie('username', request.body.username);
