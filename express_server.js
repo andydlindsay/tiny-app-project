@@ -9,8 +9,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  'b2xVn2': {
+    user_id: 'userRandomId',
+    longURL: 'http://www.lighthouselabs.ca',
+  },
+  '9sm5xK': {
+    user_id: 'user2RandomId',
+    longURL: 'http://www.google.com',
+  },
 };
 
 const users = {
@@ -137,7 +143,7 @@ app.get('/urls', (request, response) => {
 
 app.post('/urls', (request, response) => {
   const shortUrl = generateRandomString(6);
-  urlDatabase[shortUrl] = request.body.longURL;
+  urlDatabase[shortUrl].longURL = request.body.longURL;
   response.redirect(`/urls/${shortUrl}`);
 });
 
@@ -145,7 +151,11 @@ app.get('/urls/new', (request, response) => {
   let templateVars = {
     user: users[request.cookies['user_id']],
   };
-  response.render('urls_new', templateVars);
+  if (templateVars.user) {
+    response.render('urls_new', templateVars);
+  } else {
+    response.redirect('/login');
+  }
 });
 
 app.post('/urls/:id/delete', (request, response) => {
@@ -160,7 +170,7 @@ app.post('/urls/:id', (request, response) => {
   const longUrl = request.body.longURL;
   const shortUrl = request.params.id;
   if (longUrl) {
-    urlDatabase[shortUrl] = longUrl;
+    urlDatabase[shortUrl].longURL = longUrl;
   }
   response.redirect('/urls');
 });
@@ -170,7 +180,7 @@ app.get('/urls/:id', (request, response) => {
   if (urlDatabase[shortURL]) {
     let templateVars = {
       shortURL,
-      longURL: urlDatabase[request.params.id],
+      longURL: urlDatabase[request.params.id].longURL,
       user: users[request.cookies['user_id']],
     };
     response.render('urls_show', templateVars);
@@ -181,7 +191,7 @@ app.get('/urls/:id', (request, response) => {
 });
 
 app.get('/u/:shortURL', (request, response) => {
-  const longURL = urlDatabase[request.params.shortURL];
+  const longURL = urlDatabase[request.params.shortURL].longURL;
   if (longURL) {
     response.redirect(longURL);
   } else {
