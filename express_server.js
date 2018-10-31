@@ -42,7 +42,10 @@ function generateRandomString(stringLength) {
 }
 
 app.get('/register', (request, response) => {
-  response.render('register');
+  const templateVars = {
+    user: users[request.cookies['user_id']],
+  };
+  response.render('register', templateVars);
 });
 
 app.post('/register', (request, response) => {
@@ -74,6 +77,13 @@ app.post('/register', (request, response) => {
   }
 });
 
+app.get('/login', (request, response) => {
+  const templateVars = {
+    user: users[request.cookies['user_id']],
+  };
+  response.render('login', templateVars);
+});
+
 app.post('/login', (request, response) => {
   if (request.body.username) {
     response.cookie('username', request.body.username);
@@ -82,7 +92,7 @@ app.post('/login', (request, response) => {
 });
 
 app.post('/logout', (request, response) => {
-  response.clearCookie('username');
+  response.clearCookie('user_id');
   response.redirect('/urls');
 });
 
@@ -93,7 +103,7 @@ app.get('/urls.json', (request, response) => {
 app.get('/urls', (request, response) => {
   let templateVars = {
     urlDatabase,
-    username: request.cookies['username'],
+    user: users[request.cookies['user_id']],
   };
   response.render('urls_index', templateVars);
 });
@@ -106,7 +116,7 @@ app.post('/urls', (request, response) => {
 
 app.get('/urls/new', (request, response) => {
   let templateVars = {
-    username: request.cookies['username'],
+    user: users[request.cookies['user_id']],
   };
   response.render('urls_new', templateVars);
 });
@@ -129,12 +139,18 @@ app.post('/urls/:id', (request, response) => {
 });
 
 app.get('/urls/:id', (request, response) => {
-  let templateVars = {
-    shortURL: request.params.id,
-    longURL: urlDatabase[request.params.id],
-    username: request.cookies['username'],
-  };
-  response.render('urls_show', templateVars);
+  const shortURL = request.params.id;
+  if (urlDatabase[shortURL]) {
+    let templateVars = {
+      shortURL,
+      longURL: urlDatabase[request.params.id],
+      user: users[request.cookies['user_id']],
+    };
+    response.render('urls_show', templateVars);
+  } else {
+    response.status(404);
+    response.end();
+  }
 });
 
 app.get('/u/:shortURL', (request, response) => {
