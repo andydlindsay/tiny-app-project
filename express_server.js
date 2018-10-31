@@ -13,6 +13,19 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+  'userRandomId': {
+    id: 'userRandomId',
+    email: 'user@example.com',
+    password: 'purple-monkey-dinosaur'
+  },
+  'user2RandomId': {
+    id: 'user2RandomId',
+    email: 'user2@example.com',
+    password: 'dishwasher-funk'
+  },
+};
+
 function generateRandomString(stringLength) {
   let outputString = '';
   for(let i = 0; i < stringLength; i++) {
@@ -30,6 +43,21 @@ function generateRandomString(stringLength) {
 
 app.get('/register', (request, response) => {
   response.render('register');
+});
+
+app.post('/register', (request, response) => {
+  if (request.body.email && request.body.password) {
+    const id = generateRandomString(10);
+    const newUser = {
+      id,
+      email: request.body.email,
+      password: request.body.password,
+    };
+    users[id] = (newUser);
+    response.cookie('user_id', id);
+    console.log(users);
+  }
+  response.redirect('/urls');
 });
 
 app.post('/login', (request, response) => {
