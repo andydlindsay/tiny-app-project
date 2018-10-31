@@ -46,7 +46,18 @@ app.get('/register', (request, response) => {
 });
 
 app.post('/register', (request, response) => {
+  // check if email and password have been passed in
   if (request.body.email && request.body.password) {
+    // check to make sure that email is unique
+    for (let key in users) {
+      if (users[key].email === request.body.email) {
+        // email is not unique, return 400
+        response.status(400);
+        response.end();
+        return;
+      }
+    }
+    // everything is fine, generate new user object
     const id = generateRandomString(10);
     const newUser = {
       id,
@@ -55,9 +66,12 @@ app.post('/register', (request, response) => {
     };
     users[id] = (newUser);
     response.cookie('user_id', id);
-    console.log(users);
+    response.redirect('/urls');
+  } else {
+    // email and/or password have not been passed in
+    response.status(400);
+    response.end();
   }
-  response.redirect('/urls');
 });
 
 app.post('/login', (request, response) => {
