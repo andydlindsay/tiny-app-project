@@ -212,8 +212,9 @@ app.get('/urls/:id', (request, response) => {
 });
 
 app.get('/u/:shortURL', (request, response) => {
-  const longURL = urlDatabase[request.params.shortURL].longURL;
-  if (longURL) {
+  const url = urlDatabase[request.params.shortURL];
+  if (url) {
+    const longURL = url.longURL;
     response.redirect(longURL);
   } else {
     response.redirect('/urls');
