@@ -28,12 +28,27 @@ function generateRandomString(stringLength) {
   return outputString;
 }
 
+app.post('/login', (request, response) => {
+  if (request.body.username) {
+    response.cookie('username', request.body.username);
+  }
+  response.redirect('/urls');
+});
+
+app.post('/logout', (request, response) => {
+  response.clearCookie('username');
+  response.redirect('/urls');
+});
+
 app.get('/urls.json', (request, response) => {
   response.json(urlDatabase);
 });
 
 app.get('/urls', (request, response) => {
-  let templateVars = { urlDatabase };
+  let templateVars = {
+    urlDatabase,
+    username: request.cookies['username'],
+  };
   response.render('urls_index', templateVars);
 });
 
@@ -44,7 +59,10 @@ app.post('/urls', (request, response) => {
 });
 
 app.get('/urls/new', (request, response) => {
-  response.render('urls_new');
+  let templateVars = {
+    username: request.cookies['username'],
+  };
+  response.render('urls_new', templateVars);
 });
 
 app.post('/urls/:id/delete', (request, response) => {
@@ -67,7 +85,8 @@ app.post('/urls/:id', (request, response) => {
 app.get('/urls/:id', (request, response) => {
   let templateVars = {
     shortURL: request.params.id,
-    longURL: urlDatabase[request.params.id]
+    longURL: urlDatabase[request.params.id],
+    username: request.cookies['username'],
   };
   response.render('urls_show', templateVars);
 });
