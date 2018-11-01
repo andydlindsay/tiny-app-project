@@ -58,14 +58,18 @@ app.get('/register', (request, response) => {
 });
 
 app.post('/register', (request, response) => {
+  const { email, password } = request.body;
   // check if email and password have been passed in
-  if (request.body.email && request.body.password) {
+  if (email && password) {
     // check to make sure that email is unique
     for (let key in users) {
-      if (users[key].email === request.body.email) {
-        // email is not unique, return 400
-        response.status(400);
-        response.send('Email already exists');
+      if (users[key].email === email) {
+        // email is not unique
+        let templateVars = {
+          user: users[request.session.user_id],
+          message: 'Email already exists',
+        };
+        response.render('error', templateVars);
         return;
       }
     }
@@ -73,8 +77,8 @@ app.post('/register', (request, response) => {
     const id = generateRandomString(10);
     const newUser = {
       id,
-      email: request.body.email,
-      password: bcrypt.hashSync(request.body.password, 10),
+      email,
+      password: bcrypt.hashSync(password, 10),
     };
     users[id] = newUser;
     request.session.user_id = id;
@@ -82,8 +86,11 @@ app.post('/register', (request, response) => {
     return;
   } else {
     // email and/or password have not been passed in
-    response.status(400);
-    response.send('Email and password fields cannot be blank');
+    let templateVars = {
+      user: users[request.session.user_id],
+      message: 'Email and password fields cannot be blank',
+    };
+    response.render('error', templateVars);
     return;
   }
 });
@@ -101,10 +108,9 @@ app.get('/login', (request, response) => {
 });
 
 app.post('/login', (request, response) => {
+  const { email, password } = request.body;
   // check if email and password have been passed in
-  if (request.body.email && request.body.password) {
-    const email = request.body.email;
-    const password = request.body.password;
+  if (email && password) {
     let userFound = false;
     for (let user in users) {
       if (users[user].email === email) {
@@ -115,22 +121,31 @@ app.post('/login', (request, response) => {
           response.redirect('/urls');
         } else {
           // bad password
-          response.status(403);
-          response.send('Incorrect password');
+          let templateVars = {
+            user: users[request.session.user_id],
+            message: 'Incorrect password',
+          };
+          response.render('error', templateVars);
           return;
         }
       }
     }
     if (!userFound) {
       // email did not match any existing users
-      response.status(403);
-      response.send('Email not found');
+      let templateVars = {
+        user: users[request.session.user_id],
+        message: 'Email not found',
+      };
+      response.render('error', templateVars);
       return;
     }
   } else {
     // no content in either email or password
-    response.status(403);
-    response.send('Email and password fields cannot be blank');
+    let templateVars = {
+      user: users[request.session.user_id],
+      message: 'Email and password fields cannot be blank',
+    };
+    response.render('error', templateVars);
     return;
   }
 });
@@ -164,8 +179,11 @@ app.post('/urls', (request, response) => {
       response.redirect('/urls');
     }
   } else {
-    response.status(401);
-    response.send('You must be logged in to submit a URL');
+    let templateVars = {
+      user: users[request.session.user_id],
+      message: 'You must be logged in to submit a URL',
+    };
+    response.render('error', templateVars);
   }
 });
 
@@ -193,13 +211,19 @@ app.post('/urls/:id/delete', (request, response) => {
       response.redirect('/urls');
     } else {
       // url does not belong to the request user
-      response.status(401);
-      response.send('Users may only delete their own shortened URLs');
+      let templateVars = {
+        user: users[request.session.user_id],
+        message: 'Users may only delete their own shortened URLs',
+      };
+      response.render('error', templateVars);
     }
   } else {
     // user is not logged in
-    response.status(401);
-    response.send('You must be logged in to delete URLs');
+    let templateVars = {
+      user: users[request.session.user_id],
+      message: 'You must be logged in to delete URLs',
+    };
+    response.render('error', templateVars);
   }
 });
 
@@ -217,31 +241,42 @@ app.post('/urls/:id', (request, response) => {
 
 app.get('/urls/:id', (request, response) => {
   const shortURL = request.params.id;
+  const { user_id } = request.session;
   if (urlDatabase[shortURL]) {
     // found matching url in db
-    if (urlDatabase[shortURL].user_id === request.session.user_id) {
+    if (urlDatabase[shortURL].user_id === user_id) {
       let templateVars = {
         shortURL,
         longURL: urlDatabase[request.params.id].longURL,
-        user: users[request.session.user_id],
+        user: users[user_id],
       };
       response.render('urls_show', templateVars);
       return;
     } else {
-      if (request.session.user_id) {
-        response.status(400);
-        response.send('Users may only view their own shortened URLs');
+      if (user_id) {
+        // url does not belong to requesting user
+        let templateVars = {
+          user: users[request.session.user_id],
+          message: 'Users may only view their own shortened URLs',
+        };
+        response.render('error', templateVars);
         return;
       } else {
-        // url does not belong to requesting user
-        response.status(400);
-        response.send('Please log in to view your URLs');
+        // user is not logged in
+        let templateVars = {
+          user: users[request.session.user_id],
+          message: 'Please login to view your shortened URLs',
+        };
+        response.render('error', templateVars);
         return;
       }
     }
   } else {
-    response.status(404);
-    response.send('URL not found');
+    let templateVars = {
+      user: users[request.session.user_id],
+      message: 'URL not found',
+    };
+    response.render('error', templateVars);
     return;
   }
 });
@@ -253,8 +288,11 @@ app.get('/u/:shortURL', (request, response) => {
     response.redirect(longURL);
   } else {
     // unable to find url in urlDatabase
-    response.status(404);
-    response.send('Shortened URL does not exist');
+    let templateVars = {
+      user: users[request.session.user_id],
+      message: 'Shortened URL does not exist',
+    };
+    response.render('error', templateVars);
   }
 });
 
