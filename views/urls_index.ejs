@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <% include ./partials/_header %>
+  <% include ./partials/_head %>
+
+  <body>
+
+    <% include ./partials/_header %>
+
+    <div class="container">
 
     <h1>Your Short URLs</h1>
 
@@ -16,7 +22,7 @@
 
     <% } else { %>
 
-      <table>
+      <table class="table">
         <% for(let url in urlDatabase) { %>
           <tr>
             <td>
@@ -30,7 +36,7 @@
             </td>
             <td>
               <form method="POST" action=<%= `/urls/${url}/delete` %>>
-                <button type="submit">
+                <button class="btn btn-primary" type="submit">
                   Delete <i class="fas fa-trash-alt"></i>
                 </button>
               </form>
@@ -39,9 +45,12 @@
         <% } %>
       </table>
 
+      <a href="/urls/new">Shorten a URL</a>
+
     <% } %>
 
-    <a href="/urls/new">Shorten a URL</a>
+    </div> <!-- .container -->
+
   </body>
 
 </html>

@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <% include ./partials/_header %>
+  <% include ./partials/_head %>
 
   <body>
 
-    <h2>Short URL: <%= shortURL %></h2>
-    <form method="POST" action=<%= `/urls/${shortURL}` %>>
-      <input id="longURL" type="text" name="longURL" style="width: 300px;" value=<%= `${longURL}` %>>
-      <button type="submit">Update</button>
-    </form>
+    <% include ./partials/_header %>
+
+    <div class="container">
+
+      <h2>Short URL: <%= shortURL %></h2>
+      <form method="POST" action=<%= `/urls/${shortURL}` %>>
+        <div class="form-group">
+          <input id="longURL" class="form-control" type="text" name="longURL" value=<%= `${longURL}` %>>
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+      </form>
+
+    </div>
 
   </body>
 

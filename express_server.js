@@ -122,7 +122,7 @@ app.post('/login', (request, response) => {
   }
 });
 
-app.get('/logout', (request, response) => {
+app.post('/logout', (request, response) => {
   request.session = null;
   response.redirect('/urls');
 });
@@ -142,12 +142,17 @@ app.get('/urls', (request, response) => {
 
 app.post('/urls', (request, response) => {
   const shortUrl = generateRandomString(6);
-  const newUrl = {
-    user_id: request.session.user_id,
-    longURL: request.body.longURL,
-  };
-  urlDatabase[shortUrl] = newUrl;
-  response.redirect(`/urls/${shortUrl}`);
+  const longURL = request.body.longURL;
+  if (longURL.length > 5) {
+    const newUrl = {
+      longURL,
+      user_id: request.session.user_id,
+    };
+    urlDatabase[shortUrl] = newUrl;
+    response.redirect(`/urls/${shortUrl}`);
+  } else {
+    response.redirect('/urls');
+  }
 });
 
 app.get('/urls/new', (request, response) => {
@@ -209,12 +214,13 @@ app.get('/u/:shortURL', (request, response) => {
   }
 });
 
-app.get('/hello', (request, response) => {
-  response.end('<html><body>Hello <b>World</b></body></html>\n');
-});
-
 app.get('/', (request, response) => {
-  response.send('Hello!');
+  const user = users[request.session.user_id];
+  if (user) {
+    response.redirect('/urls');
+  } else {
+    response.redirect('/login');
+  }
 });
 
 app.listen(PORT, () => {
