@@ -9,7 +9,7 @@
 
     <div class="container">
 
-      <h2>Short URL: <%= shortURL %></h2>
+      <h2>Short URL: <a target="_blank" href="/u/<%= shortURL %>"><%= shortURL %></a></h2>
       <form method="POST" action=<%= `/urls/${shortURL}` %>>
         <div class="form-group">
           <input id="longURL" class="form-control" type="text" name="longURL" value=<%= `${longURL}` %>>

@@ -26,13 +26,13 @@
         <% for(let url in urlDatabase) { %>
           <tr>
             <td>
-              <%= url %>
+              <a target="_blank" href="/u/<%= url %>"><%= url %></a>
             </td>
             <td>
-              <a href=<%= urlDatabase[url].longURL %>><%= urlDatabase[url].longURL %></a>
+              <a href="<%= urlDatabase[url].longURL %>"><%= urlDatabase[url].longURL %></a>
             </td>
             <td>
-              <i class="far fa-edit"></i><a href=<%= `http://localhost:8080/urls/${url}` %>> Edit</a>
+              <a href=<%= `http://localhost:8080/urls/${url}` %>><i class="far fa-edit"></i> Edit</a>
             </td>
             <td>
               <form method="POST" action=<%= `/urls/${url}/delete` %>>
