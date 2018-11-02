@@ -10,15 +10,43 @@
     <div class="container">
 
       <h2 class="mt-3">Short URL: <a target="_blank" href="/u/<%= shortURL %>"><%= shortURL %></a></h2>
-      <h4 class="mt-3">Visited: <%= visited %> <%= (visited === 1) ? 'time' : 'times' %></h4>
-      <h4 class="mt-3">Unique Visitors: <%= unique_visitors %></h4>
-      <form method="POST" action=<%= `/urls/${shortURL}?_method=PUT` %>>
+
+      <table class="mt-3 table">
+        <tr>
+          <td>Visited: <%= visited %> <%= (visited === 1) ? 'time' : 'times' %></td>
+          <td>Unique Visitors: <%= unique_visitors %></td>
+        </tr>
+      </table>
+
+      <form method="POST" action="<%= `/urls/${shortURL}?_method=PUT` %>">
         <div class="form-group">
           <label for="longURL">Long URL</label>
           <input id="longURL" class="form-control" type="text" name="longURL" value=<%= `${longURL}` %>>
         </div>
         <button type="submit" class="btn btn-primary">Update</button>
       </form>
+
+      <% if (visits.length) { %>
+        <table class="table">
+          <h4 class="mt-3">Visitor Log</h4>
+          <tr>
+            <th>Visitor ID</th>
+            <th>Time</th>
+          </tr>
+          <% for(let visit in visits) { %>
+            <tr>
+              <td>
+                <%= visits[visit].visitor_id %>
+              </td>
+              <td>
+                <%= visits[visit].timestamp %>
+              </td>
+            </tr>
+          <% } %>
+        </table>
+      <% } else { %>
+        <h3 class="mt-3">Your link hasn't been visited yet.</h3>
+      <% } %>
 
     </div>
 

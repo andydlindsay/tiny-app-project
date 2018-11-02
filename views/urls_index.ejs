@@ -32,7 +32,10 @@
               <a href="<%= urlDatabase[url].longURL %>"><%= urlDatabase[url].longURL %></a>
             </td>
             <td class="pt-3">
-              <a class="float-right" href=<%= `http://localhost:8080/urls/${url}` %>><i class="far fa-edit"></i> Edit</a>
+              <a class="float-right" href=<%= `http://localhost:8080/urls/${url}` %>><i class="far fa-edit"></i> Edit </a>
+            </td>
+            <td class="pt-3">
+              <a class="float-right" href=<%= `http://localhost:8080/urls/${url}` %>><i class="far fa-chart-bar"></i> Analytics</a>
             </td>
             <td>
               <form class="float-right" method="POST" action=<%= `/urls/${url}/delete?_method=DELETE` %>>

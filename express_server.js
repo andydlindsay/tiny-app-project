@@ -176,7 +176,8 @@ app.post('/urls', (request, response) => {
         longURL,
         user_id: request.session.user_id,
         visited: 0,
-        unique_visitors: 0
+        unique_visitors: 0,
+        visits: []
       };
       urlDatabase[shortURL] = newUrl;
       response.redirect(`/urls/${shortURL}`);
@@ -250,12 +251,13 @@ app.get('/urls/:id', (request, response) => {
   if (urlDatabase[shortURL]) {
     // found matching url in db
     if (urlDatabase[shortURL].user_id === user_id) {
-      const { longURL, visited, unique_visitors } = urlDatabase[request.params.id];
+      const { longURL, visited, unique_visitors, visits } = urlDatabase[request.params.id];
       let templateVars = {
         shortURL,
         longURL,
         visited,
         unique_visitors,
+        visits,
         user: users[user_id],
       };
       response.render('urls_show', templateVars);
@@ -293,17 +295,23 @@ app.get('/u/:shortURL', (request, response) => {
   const url = urlDatabase[request.params.shortURL];
   if (url) {
     const longURL = url.longURL;
-    url.visited += 1;
+    const visitor_id = request.session.visitor_id || generateRandomString(15);
     const visited = request.session.visited;
-    let visitedArray = [];
-    if (visited) {
-      visitedArray = JSON.parse(visited);
-    }
+    let visitedArray = visited ? JSON.parse(visited) : [];
+
     if (visitedArray.indexOf(url.shortURL) === -1) {
       // user has never used link before
       visitedArray.push(url.shortURL);
       url.unique_visitors += 1;
     }
+
+    url.visited += 1;
+    url.visits.push({
+      visitor_id,
+      timestamp: new Date(),
+    });
+
+    request.session.visitor_id = visitor_id;
     request.session.visited = JSON.stringify(visitedArray);
     response.redirect(longURL);
   } else {
