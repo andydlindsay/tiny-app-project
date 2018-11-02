@@ -32,10 +32,10 @@
               <a href="<%= urlDatabase[url].longURL %>"><%= urlDatabase[url].longURL %></a>
             </td>
             <td class="pt-3">
-              <a href=<%= `http://localhost:8080/urls/${url}` %>><i class="far fa-edit"></i> Edit</a>
+              <a class="float-right" href=<%= `http://localhost:8080/urls/${url}` %>><i class="far fa-edit"></i> Edit</a>
             </td>
             <td>
-              <form method="POST" action=<%= `/urls/${url}/delete?_method=DELETE` %>>
+              <form class="float-right" method="POST" action=<%= `/urls/${url}/delete?_method=DELETE` %>>
                 <button class="btn btn-primary" type="submit">
                   Delete <i class="fas fa-trash-alt"></i>
                 </button>
