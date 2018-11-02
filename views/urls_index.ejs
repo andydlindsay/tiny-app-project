@@ -35,7 +35,7 @@
               <a href=<%= `http://localhost:8080/urls/${url}` %>><i class="far fa-edit"></i> Edit</a>
             </td>
             <td>
-              <form method="POST" action=<%= `/urls/${url}/delete` %>>
+              <form method="POST" action=<%= `/urls/${url}/delete?_method=DELETE` %>>
                 <button class="btn btn-primary" type="submit">
                   Delete <i class="fas fa-trash-alt"></i>
                 </button>

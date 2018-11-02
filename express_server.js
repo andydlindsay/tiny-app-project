@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
+const methodOverride = require('method-override');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -15,6 +16,7 @@ app.use(cookieSession({
   name: 'session',
   secret: process.env.SECRET_KEY,
 }));
+app.use(methodOverride('_method'));
 
 const urlDatabase = {};
 
@@ -198,7 +200,7 @@ app.get('/urls/new', (request, response) => {
   }
 });
 
-app.post('/urls/:id/delete', (request, response) => {
+app.delete('/urls/:id/delete', (request, response) => {
   const shortUrl = request.params.id;
   const user_id = request.session.user_id;
   if (user_id) {
@@ -227,7 +229,7 @@ app.post('/urls/:id/delete', (request, response) => {
   }
 });
 
-app.post('/urls/:id', (request, response) => {
+app.put('/urls/:id', (request, response) => {
   const longUrl = request.body.longURL;
   const shortUrl = request.params.id;
   const user_id = request.session.user_id;

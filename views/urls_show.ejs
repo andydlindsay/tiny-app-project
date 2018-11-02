@@ -10,7 +10,7 @@
     <div class="container">
 
       <h2 class="mt-3">Short URL: <a target="_blank" href="/u/<%= shortURL %>"><%= shortURL %></a></h2>
-      <form method="POST" action=<%= `/urls/${shortURL}` %>>
+      <form method="POST" action=<%= `/urls/${shortURL}?_method=PUT` %>>
         <div class="form-group">
           <input id="longURL" class="form-control" type="text" name="longURL" value=<%= `${longURL}` %>>
         </div>
