@@ -3,13 +3,13 @@
 
   <% include ./partials/_head %>
 
-  <body>
+  <body style="font-family: 'Quicksand', sans-serif;">
 
     <% include ./partials/_header %>
 
     <div class="container">
 
-      <h2>Short URL: <a target="_blank" href="/u/<%= shortURL %>"><%= shortURL %></a></h2>
+      <h2 class="mt-3">Short URL: <a target="_blank" href="/u/<%= shortURL %>"><%= shortURL %></a></h2>
       <form method="POST" action=<%= `/urls/${shortURL}` %>>
         <div class="form-group">
           <input id="longURL" class="form-control" type="text" name="longURL" value=<%= `${longURL}` %>>

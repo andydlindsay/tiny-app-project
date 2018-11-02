@@ -3,13 +3,13 @@
 
   <% include ./partials/_head %>
 
-  <body>
+  <body style="font-family: 'Quicksand', sans-serif;">
 
     <% include ./partials/_header %>
 
     <div class="container">
 
-      <form action="/urls" method="POST">
+      <form class="mt-3" action="/urls" method="POST">
         <div class="form-group">
           <label for="longURL">Enter a URL:</label>
           <input class="form-control" id="longURL" type="text" name="longURL" placeholder="http://">

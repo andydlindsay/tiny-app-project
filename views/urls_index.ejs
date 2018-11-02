@@ -3,13 +3,13 @@
 
   <% include ./partials/_head %>
 
-  <body>
+  <body style="font-family: 'Quicksand', sans-serif;">
 
     <% include ./partials/_header %>
 
     <div class="container">
 
-    <h1>Your Short URLs</h1>
+    <h2 class="mt-3">Your Short URLs</h2>
 
     <!-- https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object -->
     <% if (Object.keys(urlDatabase).length === 0 && urlDatabase.constructor === Object) { %>
@@ -25,13 +25,13 @@
       <table class="table">
         <% for(let url in urlDatabase) { %>
           <tr>
-            <td>
+            <td class="pt-3">
               <a target="_blank" href="/u/<%= url %>"><%= url %></a>
             </td>
-            <td>
+            <td class="pt-3">
               <a href="<%= urlDatabase[url].longURL %>"><%= urlDatabase[url].longURL %></a>
             </td>
-            <td>
+            <td class="pt-3">
               <a href=<%= `http://localhost:8080/urls/${url}` %>><i class="far fa-edit"></i> Edit</a>
             </td>
             <td>
